@@ -1,7 +1,7 @@
 /**
  * menu-aim is a jQuery plugin for dropdown menus that can differentiate
  * between a user trying hover over a dropdown item vs trying to navigate into
- * a submenu's contents. It will fire events when the user's mouse enters a 
+ * a submenu's contents. It will fire events when the user's mouse enters a
  * new dropdown item *and* when that item is being intentionally hovered over.
  *
  * menu-aim assumes that you have are using a menu with submenus that expand
@@ -201,6 +201,26 @@
             };
 
         /**
+         * Calculate the current cursor speed.
+         */
+        var currentSpeed = function () {
+                loc = mouseLocs[mouseLocs.length - 1],
+                    prevLoc = mouseLocs[0];
+                if (!(loc && prevLoc)) {
+                    return 0;
+                }
+
+                // v = d / t
+                var dx = loc.x - prevLoc.x;
+                var dy = loc.y - prevLoc.y;
+                var dt = loc.time.getMilliseconds() - prevLoc.time.getMilliseconds();
+                var d = Math.sqrt(Math.pow(dy, 2) + Math.pow(dx, 2))
+                var speed = Math.abs((d / dt) * 1000);
+                console.log("Current speed: " + speed);
+                return speed;
+            };
+
+        /**
          * Return the amount of time that should be used as a delay before the
          * currently hovered row is activated.
          *
@@ -209,7 +229,9 @@
          * checking again to see if the row should be activated.
          */
         var activationDelay = function() {
-                if (!activeRow || !$(activeRow).is(options.submenuSelector)) {
+                var cur = currentSpeed();
+                if (!activeRow || !$(activeRow).is(options.submenuSelector)
+                     && (cur < options.speed)) {
                     // If there is no other submenu row already active, then
                     // go ahead and activate immediately.
                     return 0;
@@ -259,8 +281,8 @@
                     lowerRight.x += options.tolerance;
                 }
 
-                if (prevLoc.x < offset.left || prevLoc.x > lowerRight.x ||
-                    prevLoc.y < offset.top || prevLoc.y > lowerRight.y) {
+                if ((prevLoc.x < offset.left || prevLoc.x > lowerRight.x ||
+                    prevLoc.y < offset.top || prevLoc.y > lowerRight.y) && cur < options.speed) {
                     // If the previous mouse location was outside of the entire
                     // menu's bounds, immediately activate.
                     return 0;
