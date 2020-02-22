@@ -230,7 +230,7 @@
          */
         var activationDelay = function() {
                 var cur = currentSpeed();
-                if (!activeRow || !$(activeRow).is(options.submenuSelector)
+                if ((!activeRow || !$(activeRow).is(options.submenuSelector))
                      && (cur < options.speed)) {
                     // If there is no other submenu row already active, then
                     // go ahead and activate immediately.
