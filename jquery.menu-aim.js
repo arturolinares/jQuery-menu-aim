@@ -106,7 +106,7 @@
          * Keep track of the last few locations of the mouse.
          */
         var mousemoveDocument = function(e) {
-                mouseLocs.push({x: e.pageX, y: e.pageY});
+                mouseLocs.push({x: e.pageX, y: e.pageY, time: new Date()});
 
                 if (mouseLocs.length > MOUSE_LOCS_TRACKED) {
                     mouseLocs.shift();
