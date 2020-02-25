@@ -97,6 +97,7 @@
                 activate: $.noop,
                 deactivate: $.noop,
                 exitMenu: $.noop,
+                speed: 600,
                 delay: 300
             }, opts);
 
@@ -216,7 +217,7 @@
                 var dt = loc.time.getMilliseconds() - prevLoc.time.getMilliseconds();
                 var d = Math.sqrt(Math.pow(dy, 2) + Math.pow(dx, 2))
                 var speed = Math.abs((d / dt) * 1000);
-                console.log("Current speed: " + speed);
+
                 return speed;
             };
 
