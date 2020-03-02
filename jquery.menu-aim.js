@@ -97,7 +97,7 @@
                 activate: $.noop,
                 deactivate: $.noop,
                 exitMenu: $.noop,
-                speed: 600,
+                speed: -1, // bigger = slower to activate menu. Speed detection is disabled by default.
                 delay: 300
             }, opts);
 
@@ -221,6 +221,14 @@
                 return speed;
             };
 
+        // verifies the current mouse speed is below the configured threshold.
+        var isSpeedValid = function (currentSpeed) {
+                if (options.speed < 0) {
+                    return true;
+                }
+                return currentSpeed < options.speed;
+            };
+
         /**
          * Return the amount of time that should be used as a delay before the
          * currently hovered row is activated.
@@ -232,7 +240,7 @@
         var activationDelay = function() {
                 var cur = currentSpeed();
                 if ((!activeRow || !$(activeRow).is(options.submenuSelector))
-                     && (cur < options.speed)) {
+                     && (isSpeedValid(cur))) {
                     // If there is no other submenu row already active, then
                     // go ahead and activate immediately.
                     return 0;
@@ -283,7 +291,7 @@
                 }
 
                 if ((prevLoc.x < offset.left || prevLoc.x > lowerRight.x ||
-                    prevLoc.y < offset.top || prevLoc.y > lowerRight.y) && cur < options.speed) {
+                    prevLoc.y < offset.top || prevLoc.y > lowerRight.y) && isSpeedValid(cur)) {
                     // If the previous mouse location was outside of the entire
                     // menu's bounds, immediately activate.
                     return 0;
